@@ -117,8 +117,16 @@
     backdrop-filter: blur(10px);
     padding: 12px 24px;
   }
-  .nav__logo{ font-family: var(--font-display); font-size: 20px; color: var(--white); letter-spacing:-.02em; }
-  .nav__logo span{ color: var(--yellow); }
+  .nav__logo{ display:flex; align-items:center; }
+  .nav__logo img{
+    height: 36px; width:auto; display:block;
+    background: var(--white); padding: 7px 11px; border-radius: 10px;
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .nav__logo:hover img{
+    transform: scale(1.08) rotate(-3deg);
+    box-shadow: 0 6px 18px rgba(230,0,126,.4);
+  }
   .nav .btn{ padding: 12px 22px; font-size:12px; }
 
   /* ============================
@@ -159,6 +167,23 @@
     position:relative; z-index:2;
     padding: 140px 24px 64px;
     max-width: var(--container); margin: 0 auto; width:100%;
+  }
+  .hero__logo{ display:inline-block; margin-bottom: 28px; }
+  .hero__logo img{
+    height: 64px; width:auto; display:block;
+    background: var(--white); padding: 14px 22px; border-radius: 18px;
+    box-shadow: 0 16px 34px rgba(0,0,0,.4);
+    animation: heroLogoFloat 4.5s ease-in-out infinite;
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .hero__logo img:hover{
+    animation-play-state: paused;
+    transform: scale(1.06) rotate(2deg);
+    box-shadow: 0 18px 40px rgba(230,0,126,.5);
+  }
+  @keyframes heroLogoFloat{
+    0%,100%{ transform: translateY(0) rotate(-2deg); }
+    50%{ transform: translateY(-10px) rotate(2deg); }
   }
   .hero__eyebrow{ color: var(--yellow); margin-bottom:18px; }
   .hero__title{
@@ -218,6 +243,30 @@
   .divider{
     height: 6px;
     background: var(--gradient);
+  }
+
+  /* Partners strip */
+  .partners{ background: var(--white); padding: 52px 0; border-bottom: 1px solid #eee; }
+  .partners__label{
+    display:block; text-align:center; font-size:12px; font-weight:700; letter-spacing:.15em;
+    text-transform:uppercase; color:#999; margin-bottom: 32px;
+  }
+  .partners__row{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap: 48px;
+  }
+  .partners__logo img{
+    height: 34px; width:auto; max-width: 170px; object-fit:contain;
+    filter: grayscale(1) opacity(.55);
+    transition: filter .3s var(--ease), transform .3s var(--ease);
+  }
+  .partners__logo:hover img{
+    filter: grayscale(0) opacity(1);
+    transform: translateY(-2px) scale(1.05);
+  }
+  @media (max-width: 640px){
+    .partners{ padding: 40px 0; }
+    .partners__row{ gap: 28px 24px; }
+    .partners__logo img{ height: 24px; }
   }
 
   /* About */
@@ -405,8 +454,10 @@
     display:flex; justify-content:space-between; align-items:flex-start; gap: 32px; flex-wrap:wrap;
     padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,.15);
   }
-  .footer__logo{ font-family: var(--font-display); font-size: 30px; }
-  .footer__logo span{ color: var(--yellow); }
+  .footer__logo img{
+    height: 46px; width:auto; display:block;
+    background: var(--white); padding: 10px 14px; border-radius: 12px;
+  }
   .footer__partners{ font-size: 13.5px; color: rgba(255,255,255,.6); margin-top: 12px; max-width:340px; line-height:1.6; }
   .footer__social{ display:flex; gap: 12px; }
   .footer__social a{
@@ -454,6 +505,7 @@
     .nav .btn{ display:none; }
     .section-pad{ padding: 72px 0; }
     .hero__content{ padding: 120px 20px 100px; }
+    .hero__logo img{ height: 44px; padding: 10px 16px; border-radius: 14px; }
     .hero__meta{ font-size: 13.5px; gap: 8px 18px; }
     .about__stat-box{ grid-template-columns: 1fr 1fr; padding: 24px; }
     .benefits__grid{ grid-template-columns: 1fr; }
@@ -476,7 +528,7 @@
      NAV
 ============================ -->
 <nav class="nav" id="siteNav">
-  <a href="#top" class="nav__logo">TSR<span>.</span></a>
+  <a href="#top" class="nav__logo"><img src="assets/logos/tsr-logo.png" alt="The Spotlight Room (TSR)"></a>
   <a href="#apply" class="btn btn-primary">Apply to Perform</a>
 </nav>
 
@@ -500,12 +552,15 @@
   <div class="hero__glow" id="heroGlow"></div>
 
   <div class="hero__content">
+    <div class="hero__logo reveal">
+      <img src="assets/logos/tsr-logo.png" alt="The Spotlight Room (TSR)">
+    </div>
     <span class="eyebrow hero__eyebrow reveal">Talent Applications Open 🔥</span>
     <h1 class="hero__title reveal">The Spotlight<br><em>Room</em> — Edition 3</h1>
     <ul class="hero__meta reveal">
       <li>📅 Saturday, 8 August 2026</li>
       <li>📍 Western Sports Bar, Lagos Mainland</li>
-      <li>🤝 Salary for Life × Wingwise × DJ Jaydee</li>
+      <li>🤝 Salary for Life × Winwize × DJ Jaydee</li>
     </ul>
     <div class="hero__actions reveal">
       <a href="#apply" class="btn btn-primary">Apply to Perform</a>
@@ -533,6 +588,32 @@
 </div>
 
 <div class="divider"></div>
+
+<!-- ============================
+     PARTNERS
+============================ -->
+<section class="partners">
+  <div class="wrap">
+    <span class="partners__label reveal">In Partnership With</span>
+    <div class="partners__row stagger">
+      <div class="partners__logo reveal">
+        <img src="assets/logos/salary4life-logo.png" alt="Salary4Life logo">
+      </div>
+      <div class="partners__logo reveal">
+        <!-- TODO: replace with real Winwize logo (transparent PNG/SVG) -->
+        <img src="https://placehold.co/280x90/transparent/0D0D0D?text=WINWIZE&font=roboto" alt="Winwize logo">
+      </div>
+      <div class="partners__logo reveal">
+        <!-- TODO: replace with real Western Sports Bar logo (transparent PNG/SVG) -->
+        <img src="https://placehold.co/280x90/transparent/0D0D0D?text=WESTERN+SPORTS+BAR&font=roboto" alt="Western Sports Bar logo">
+      </div>
+      <div class="partners__logo reveal">
+        <!-- TODO: replace with real DJ Jaydee logo (transparent PNG/SVG) -->
+        <img src="https://placehold.co/280x90/transparent/0D0D0D?text=DJ+JAYDEE&font=roboto" alt="DJ Jaydee logo">
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ============================
      ABOUT
@@ -619,6 +700,11 @@
         <span class="cat-card__icon">😂</span>
         <h3>Comedians</h3>
         <p class="cat-card__tag">Stand-up, crowd work, sketch — if it's funny, it's in.</p>
+      </div>
+      <div class="cat-card reveal">
+        <span class="cat-card__icon">🎹</span>
+        <h3>Instrumentalists</h3>
+        <p class="cat-card__tag">Keys, strings, drums, horns — solo or backing a set, bring the skill.</p>
       </div>
       <div class="cat-card reveal">
         <span class="cat-card__icon">✨</span>
@@ -743,7 +829,7 @@
 
       <!-- FORM -->
       <form id="tsrApplyForm"
-            action="https://docs.google.com/forms/u/0/d/e/FORM_ID_PLACEHOLDER/formResponse"
+            action="https://docs.google.com/forms/d/e/1FAIpQLSe3KyLdinDcEjH3AVA2nvs8hC3v42R0L6omSY6DoNa2CX3QgA/formResponse"
             method="POST"
             target="hidden_iframe"
             novalidate>
@@ -755,83 +841,67 @@
         <div class="form-grid">
           <div class="field">
             <label for="fullName">Full Name<span class="req">*</span></label>
-            <!-- TODO: replace entry.111111111 with real Google Form entry ID -->
-            <input type="text" id="fullName" name="entry.111111111" required autocomplete="name">
+            <input type="text" id="fullName" name="entry.1069799200" required autocomplete="name">
           </div>
 
           <div class="field">
             <label for="stageName">Stage / Artist Name</label>
-            <!-- TODO: replace entry.222222222 with real Google Form entry ID -->
-            <input type="text" id="stageName" name="entry.222222222" autocomplete="nickname">
+            <input type="text" id="stageName" name="entry.1850890932" autocomplete="nickname">
           </div>
 
           <div class="field">
             <label for="phone">Phone / WhatsApp<span class="req">*</span></label>
-            <!-- TODO: replace entry.333333333 with real Google Form entry ID -->
-            <input type="tel" id="phone" name="entry.333333333" required autocomplete="tel" placeholder="+234...">
+            <input type="tel" id="phone" name="entry.779996845" required autocomplete="tel" placeholder="+234...">
           </div>
 
           <div class="field">
             <label for="email">Email Address<span class="req">*</span></label>
-            <!-- TODO: replace entry.444444444 with real Google Form entry ID -->
-            <input type="email" id="email" name="entry.444444444" required autocomplete="email">
+            <input type="email" id="email" name="entry.2021620149" required autocomplete="email">
           </div>
 
           <div class="field">
             <label for="instagram">Instagram Handle<span class="req">*</span></label>
-            <!-- TODO: replace entry.555555555 with real Google Form entry ID -->
-            <input type="text" id="instagram" name="entry.555555555" required placeholder="@yourhandle">
+            <input type="text" id="instagram" name="entry.1280377336" required placeholder="@yourhandle">
           </div>
 
           <div class="field">
             <label for="category">Talent Category<span class="req">*</span></label>
-            <!-- TODO: replace entry.666666666 with real Google Form entry ID -->
-            <select id="category" name="entry.666666666" required>
+            <select id="category" name="entry.1213744551" required>
               <option value="" disabled selected>Select category</option>
               <option value="Musician/Singer">Musician / Singer</option>
               <option value="Dancer">Dancer</option>
               <option value="Magician">Magician</option>
               <option value="Spoken Word/Poet">Spoken Word / Poet</option>
               <option value="Comedian">Comedian</option>
+              <option value="Instrumentalist">Instrumentalist</option>
               <option value="Other">Other</option>
             </select>
           </div>
 
           <div class="field">
             <label for="liveBefore">Performed Live Before?<span class="req">*</span></label>
-            <!-- TODO: replace entry.999999999 with real Google Form entry ID -->
-            <select id="liveBefore" name="entry.999999999" required>
+            <select id="liveBefore" name="entry.833619447" required>
               <option value="" disabled selected>Select an option</option>
-              <option value="Yes, multiple times">Yes, multiple times</option>
-              <option value="Yes, once or twice">Yes, once or twice</option>
-              <option value="No, first time">No, first time</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
           </div>
 
           <div class="field full">
             <label for="about">Tell Us About Your Act<span class="req">*</span></label>
-            <!-- TODO: replace entry.777777777 with real Google Form entry ID -->
-            <textarea id="about" name="entry.777777777" required placeholder="What's the act, what's the energy, what should we expect?"></textarea>
+            <textarea id="about" name="entry.286511032" required placeholder="What's the act, what's the energy, what should we expect?"></textarea>
           </div>
 
           <div class="field full">
             <label for="sampleLink">Link To A Performance Sample<span class="req">*</span></label>
-            <!-- TODO: replace entry.888888888 with real Google Form entry ID -->
-            <input type="url" id="sampleLink" name="entry.888888888" required placeholder="YouTube, Instagram Reel, TikTok, etc.">
+            <input type="url" id="sampleLink" name="entry.857802557" required placeholder="YouTube, Instagram Reel, TikTok, etc.">
             <span class="field-hint">A clear phone video is fine — we just need to see you perform.</span>
           </div>
 
           <div class="field full">
-            <label for="extra">Anything Else We Should Know</label>
-            <!-- TODO: replace entry.101010101 with real Google Form entry ID -->
-            <textarea id="extra" name="entry.101010101" placeholder="Optional — stage requirements, group size, whatever's relevant."></textarea>
-          </div>
-
-          <div class="field full">
             <div class="consent">
-              <!-- TODO: replace entry.121212121 with real Google Form entry ID -->
-              <input type="checkbox" id="consent" name="entry.121212121" value="I confirm this information is accurate and agree to be contacted" required>
-              <label for="consent">I confirm this information is accurate and agree to be contacted<span class="req">*</span></label>
+              <input type="checkbox" id="consent" name="entry.515288112" value="I confirm the information above is accurate, and I agree to let TSR photograph, film, and use my name, image, and performance footage across TSR's social media, marketing, and promotional content with no expectation of payment." required>
+              <label for="consent">I confirm the information above is accurate, and I agree to let TSR photograph, film, and use my name, image, and performance footage across TSR's social media, marketing, and promotional content with no expectation of payment.<span class="req">*</span></label>
             </div>
           </div>
         </div>
@@ -860,8 +930,8 @@
   <div class="wrap">
     <div class="footer__top">
       <div>
-        <div class="footer__logo">TSR<span>.</span></div>
-        <p class="footer__partners">In partnership with Salary for Life · Wingwise · Western Sports Bar · DJ Jaydee</p>
+        <div class="footer__logo"><img src="assets/logos/tsr-logo.png" alt="The Spotlight Room (TSR)"></div>
+        <p class="footer__partners">In partnership with Salary for Life · Winwize · Western Sports Bar · DJ Jaydee</p>
       </div>
       <div class="footer__social">
         <!-- TODO: replace # with real social/contact links -->
