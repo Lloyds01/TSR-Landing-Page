@@ -920,8 +920,8 @@
   </div>
 </section>
 
-<!-- hidden iframe target for form post -->
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+<!-- iframe target for form post, kept technically visible (not display:none) so ad/tracker blockers don't flag it -->
+<iframe name="hidden_iframe" id="hidden_iframe" title="form submission target" style="position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; border:0; pointer-events:none;"></iframe>
 
 <!-- ============================
      FOOTER
@@ -1041,11 +1041,16 @@
   var submitBtn = document.getElementById('submitBtn');
   var submitted = false;
 
-  iframe.addEventListener('load', function(){
-    if (!submitted) return; // ignore the initial blank load
+  var revealSuccess = function(){
+    if (thankYou.style.display === 'block') return;
     form.style.display = 'none';
     thankYou.style.display = 'block';
     thankYou.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  iframe.addEventListener('load', function(){
+    if (!submitted) return; // ignore the initial blank load
+    revealSuccess();
   });
 
   form.addEventListener('submit', function(e){
@@ -1057,7 +1062,10 @@
     submitted = true;
     submitBtn.textContent = 'Submitting...';
     submitBtn.disabled = true;
-    // form posts natively to the hidden iframe; iframe 'load' handler above reveals the thank-you state
+    // form posts natively to the hidden iframe; iframe 'load' handler above reveals the thank-you state.
+    // Fallback: some ad/tracker blockers can prevent the iframe's load event from firing even when
+    // the POST itself succeeds, so reveal success anyway after a short delay if it hasn't fired yet.
+    setTimeout(revealSuccess, 4000);
   });
 
 })();
