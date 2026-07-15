@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(osascript -e 'tell application \"Safari\" to activate')"
+    ]
+  }
+}

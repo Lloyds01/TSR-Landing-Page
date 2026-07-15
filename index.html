@@ -907,6 +907,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary" id="submitBtn">Submit Application</button>
+        <div id="debugLog" style="display:none; margin-top:16px; padding:14px; background:#111; color:#0f0; font-family:monospace; font-size:12px; line-height:1.6; border-radius:8px; white-space:pre-wrap;"></div>
       </form>
 
       <!-- THANK YOU STATE -->
@@ -1039,33 +1040,50 @@
   var iframe = document.getElementById('hidden_iframe');
   var thankYou = document.getElementById('thankYou');
   var submitBtn = document.getElementById('submitBtn');
+  var debugLog = document.getElementById('debugLog');
+  var debugOn = window.location.search.indexOf('debug=1') !== -1;
   var submitted = false;
 
-  var revealSuccess = function(){
-    if (thankYou.style.display === 'block') return;
+  var log = function(msg){
+    if (!debugOn) return;
+    debugLog.style.display = 'block';
+    debugLog.textContent += '[' + new Date().toLocaleTimeString() + '] ' + msg + '\n';
+  };
+  log('Page loaded, debug mode on.');
+
+  var revealSuccess = function(source){
+    log('revealSuccess() called from: ' + source);
+    if (thankYou.style.display === 'block'){
+      log('Thank-you already shown, skipping.');
+      return;
+    }
     form.style.display = 'none';
     thankYou.style.display = 'block';
     thankYou.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   iframe.addEventListener('load', function(){
+    log('iframe load event fired. submitted=' + submitted);
     if (!submitted) return; // ignore the initial blank load
-    revealSuccess();
+    revealSuccess('iframe load event');
   });
 
   form.addEventListener('submit', function(e){
+    log('Submit event fired.');
     if (!form.checkValidity()){
+      log('checkValidity() FAILED — browser will block submission and show a native validation message. This is very likely your issue: a required field is empty or invalid.');
       e.preventDefault();
       form.reportValidity();
       return;
     }
+    log('checkValidity() passed. Browser will now POST to: ' + form.action);
     submitted = true;
     submitBtn.textContent = 'Submitting...';
     submitBtn.disabled = true;
     // form posts natively to the hidden iframe; iframe 'load' handler above reveals the thank-you state.
     // Fallback: some ad/tracker blockers can prevent the iframe's load event from firing even when
     // the POST itself succeeds, so reveal success anyway after a short delay if it hasn't fired yet.
-    setTimeout(revealSuccess, 4000);
+    setTimeout(function(){ revealSuccess('4s fallback timer'); }, 4000);
   });
 
 })();
