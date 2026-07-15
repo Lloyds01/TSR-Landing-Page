@@ -831,7 +831,6 @@
       <form id="tsrApplyForm"
             action="https://docs.google.com/forms/d/e/1FAIpQLSe3KyLdinDcEjH3AVA2nvs8hC3v42R0L6omSY6DoNa2CX3QgA/formResponse"
             method="POST"
-            target="hidden_iframe"
             novalidate>
 
         <span class="apply-card__eyebrow eyebrow">Talent Application — Edition 3</span>
@@ -907,7 +906,6 @@
         </div>
 
         <button type="submit" class="btn btn-primary" id="submitBtn">Submit Application</button>
-        <div id="debugLog" style="display:none; margin-top:16px; padding:14px; background:#111; color:#0f0; font-family:monospace; font-size:12px; line-height:1.6; border-radius:8px; white-space:pre-wrap;"></div>
       </form>
 
       <!-- THANK YOU STATE -->
@@ -917,12 +915,11 @@
         <p>You're officially in the pile. If you're shortlisted for Edition 3, we'll reach out on the number or IG handle you gave us. Either way — see you around.</p>
       </div>
 
+      <div id="debugLog" style="display:none; margin-top:16px; padding:14px; background:#111; color:#0f0; font-family:monospace; font-size:12px; line-height:1.6; border-radius:8px; white-space:pre-wrap;"></div>
+
     </div>
   </div>
 </section>
-
-<!-- iframe target for form post, kept technically visible (not display:none) so ad/tracker blockers don't flag it -->
-<iframe name="hidden_iframe" id="hidden_iframe" title="form submission target" style="position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; border:0; pointer-events:none;"></iframe>
 
 <!-- ============================
      FOOTER
@@ -1035,14 +1032,12 @@
     });
   });
 
-  /* Form submit -> hidden iframe -> thank you state */
+  /* Form submit -> fetch (no-cors) -> thank you state */
   var form = document.getElementById('tsrApplyForm');
-  var iframe = document.getElementById('hidden_iframe');
   var thankYou = document.getElementById('thankYou');
   var submitBtn = document.getElementById('submitBtn');
   var debugLog = document.getElementById('debugLog');
   var debugOn = window.location.search.indexOf('debug=1') !== -1;
-  var submitted = false;
 
   var log = function(msg){
     if (!debugOn) return;
@@ -1053,37 +1048,39 @@
 
   var revealSuccess = function(source){
     log('revealSuccess() called from: ' + source);
-    if (thankYou.style.display === 'block'){
-      log('Thank-you already shown, skipping.');
-      return;
-    }
     form.style.display = 'none';
     thankYou.style.display = 'block';
     thankYou.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  iframe.addEventListener('load', function(){
-    log('iframe load event fired. submitted=' + submitted);
-    if (!submitted) return; // ignore the initial blank load
-    revealSuccess('iframe load event');
-  });
-
   form.addEventListener('submit', function(e){
+    e.preventDefault();
     log('Submit event fired.');
     if (!form.checkValidity()){
-      log('checkValidity() FAILED — browser will block submission and show a native validation message. This is very likely your issue: a required field is empty or invalid.');
-      e.preventDefault();
+      log('checkValidity() FAILED — a required field is empty or invalid.');
       form.reportValidity();
       return;
     }
-    log('checkValidity() passed. Browser will now POST to: ' + form.action);
-    submitted = true;
+    log('checkValidity() passed. Sending fetch POST to: ' + form.action);
     submitBtn.textContent = 'Submitting...';
     submitBtn.disabled = true;
-    // form posts natively to the hidden iframe; iframe 'load' handler above reveals the thank-you state.
-    // Fallback: some ad/tracker blockers can prevent the iframe's load event from firing even when
-    // the POST itself succeeds, so reveal success anyway after a short delay if it hasn't fired yet.
-    setTimeout(function(){ revealSuccess('4s fallback timer'); }, 4000);
+
+    var formData = new FormData(form);
+    var params = new URLSearchParams();
+    formData.forEach(function(value, key){ params.append(key, value); });
+    log('Encoded as application/x-www-form-urlencoded (Google rejects multipart/form-data with a 400).');
+
+    fetch(form.action, { method: 'POST', mode: 'no-cors', body: params })
+      .then(function(){
+        log('fetch() resolved — the browser sent the request without being blocked. (With no-cors we cannot read Google\'s actual response status, but this confirms nothing intercepted it client-side.)');
+        revealSuccess('fetch resolved');
+      })
+      .catch(function(err){
+        log('fetch() FAILED: ' + err + ' — the request was blocked before it left the browser (commonly an ad blocker or privacy extension). Submission was NOT sent.');
+        submitBtn.textContent = 'Submit Application';
+        submitBtn.disabled = false;
+        alert('Your submission was blocked before it could be sent — this is usually caused by an ad blocker or privacy extension. Please try disabling it, or try a different browser, then submit again.');
+      });
   });
 
 })();
