@@ -128,6 +128,7 @@
     box-shadow: 0 6px 18px rgba(230,0,126,.4);
   }
   .nav .btn{ padding: 12px 22px; font-size:12px; }
+  .nav__actions{ display:flex; align-items:center; gap: 12px; }
 
   /* ============================
      HERO
@@ -570,7 +571,10 @@
 ============================ -->
 <nav class="nav" id="siteNav">
   <a href="#top" class="nav__logo"><img src="assets/logos/tsr-logo.png" alt="The Spotlight Room (TSR)"></a>
-  <a href="#apply" class="btn btn-primary">Apply to Perform</a>
+  <div class="nav__actions">
+    <button type="button" class="btn btn-ghost js-open-attend">Register To Attend</button>
+    <a href="#apply" class="btn btn-primary">Apply to Perform</a>
+  </div>
 </nav>
 
 <!-- ============================
@@ -966,7 +970,7 @@
 <section class="attend-strip">
   <div class="wrap">
     <p>Coming to watch, not perform?</p>
-    <button type="button" class="btn btn-primary" id="openAttendModal">Register To Attend</button>
+    <button type="button" class="btn btn-primary js-open-attend">Register To Attend</button>
   </div>
 </section>
 
@@ -1162,15 +1166,17 @@
 
   /* Register to Attend: modal open/close */
   var attendModal = document.getElementById('attendModal');
-  var openAttendBtn = document.getElementById('openAttendModal');
+  var openAttendBtns = document.querySelectorAll('.js-open-attend');
   var closeAttendBtn = document.getElementById('closeAttendModal');
   var attendForm = document.getElementById('attendForm');
   var attendThanks = document.getElementById('attendThanks');
   var attendSubmitBtn = document.getElementById('attendSubmitBtn');
 
-  openAttendBtn.addEventListener('click', function(){
-    attendModal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+  openAttendBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      attendModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
   });
   function closeAttendModal(){
     attendModal.style.display = 'none';
